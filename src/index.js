@@ -91,10 +91,16 @@ function parseSecuritySchemes(ramlSecuritySchemes) {
       if (ramlSecurityObj.type === 'OAuth 1.0')
         return;
 
-      var srType = {
-        'OAuth 2.0': 'oauth2',
-        'Basic Authentication': 'basic',
-      }[ramlSecurityObj.type];
+      //Convert 'x-*' types to 'apiKey'
+      var found = ramlSecurityObj.type.match(/^x\-/i);
+      if (found) {
+        var srType = 'apiKey';
+      } else {
+        var srType = {
+          'OAuth 2.0': 'oauth2',
+          'Basic Authentication': 'basic',
+        }[ramlSecurityObj.type];
+      }
       assert(srType);
 
       var srSecurity = {
